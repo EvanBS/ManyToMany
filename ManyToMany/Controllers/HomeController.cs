@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ManyToMany.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,23 +9,27 @@ namespace ManyToMany.Controllers
 {
     public class HomeController : Controller
     {
+        ApplicationDbContext db = new ApplicationDbContext();
+
         public ActionResult Index()
         {
-            return View();
+            return View(db.Students.ToList());
         }
 
-        public ActionResult About()
+        public ActionResult Details(int id = 0)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
+            Student student = db.Students.Find(id);
+            if (student == null)
+            {
+                return HttpNotFound();
+            }
+            return View(student);
         }
 
-        public ActionResult Contact()
+        protected override void Dispose(bool disposing)
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            db.Dispose();
+            base.Dispose(disposing);
         }
     }
 }
